@@ -1,7 +1,6 @@
 global.self = global
 
 var WebSocketClient = require('websocket').client
-var Paho = require('../paho-mqtt')
 require('dotenv').config()
 
 global.WebSocket = function(wsurl, protocol) {
@@ -57,7 +56,7 @@ global.WebSocket = function(wsurl, protocol) {
 
 
 var LocalStorage = require('node-localstorage').LocalStorage
-global.localStorage = new LocalStorage('./persistence')
+global.localStorage = new LocalStorage('./localstorage')
 
 var Paho = require('../paho-mqtt')
 global.Paho = Paho
@@ -89,14 +88,14 @@ function printConfig(settings) {
 }
 
 module.exports = {
-  server: ensureValue(process.env.TEST_SERVER, 'iot.eclipse.org'),
-  port: parseInt(ensureValue(process.env.TEST_SERVER_PORT, '443')),
-  path: ensureValue(process.env.TEST_SERVER_PATH, '/ws'),
+  server: ensureValue(process.env.TEST_SERVER, 'mqtt.eclipse.org'),
+  port: parseInt(ensureValue(process.env.TEST_SERVER_PORT, '80')),
+  path: ensureValue(process.env.TEST_SERVER_PATH, '/mqtt'),
   mqttVersion: parseInt(ensureValue(process.env.TEST_SERVER_MQTTVER, '3')),
-  interopServer: ensureValue(process.env.TEST_INTEROPSERVER, 'iot.eclipse.org'),
-  interopPort: parseInt(ensureValue(process.env.TEST_INTEROPPORT, '443')),
-  interopPath: ensureValue(process.env.TEST_INTEROPPATH, '/ws'),
-  useSSL: ensureValue((process.env.TEST_USE_SSL === 'true'), true),
+  interopServer: ensureValue(process.env.TEST_INTEROPSERVER, 'mqtt.eclipse.org'),
+  interopPort: parseInt(ensureValue(process.env.TEST_INTEROPPORT, '80')),
+  interopPath: ensureValue(process.env.TEST_INTEROPPATH, '/mqtt'),
+  useSSL: false,
   topicPrefix: 'paho-mqtt-test-' + guid(),
   Paho: Paho,
   printConfig: printConfig

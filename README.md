@@ -59,6 +59,11 @@ $ mvn test
 ```
 The parameters passed in should be modified to match the broker instance being tested against.
 
+### MQTT Server
+
+You can check out the [public MQTT servers](https://github.com/mqtt/mqtt.github.io/wiki/public_brokers) available,
+or run a local MQTT Eclipse Mosquitto Server inside a Docker container with `cd mosquitto && docker-compose up`
+ 
 ### Documentation
 
 Reference documentation is online at: [http://www.eclipse.org/paho/files/jsdoc/index.html](http://www.eclipse.org/paho/files/jsdoc/index.html)

@@ -212,37 +212,7 @@ describe('InteropsTests', function() {
     });
   });
 
-  it('should connect successfully with a 0 length clientid with cleansession true', function() {
-    client = new Paho.Client(testServer, testPort, testPath, "");
-    expect(client).not.toBe(null);
-
-    runs(function() {
-      client.connect({
-        cleanSession: true,
-        onSuccess: callbacks.onConnectSuccess,
-        mqttVersion: testMqttVersion,
-        useSSL: testUseSSL
-      });
-    });
-    waitsFor(function() {
-      return client.isConnected();
-    }, "the client should connect", 5000);
-    runs(function() {
-      expect(client.isConnected()).toBe(true);
-    });
-
-    runs(function() {
-      client.disconnect();
-    });
-    waitsFor(function() {
-      return true;
-    }, "the client should disconnect", 5000);
-    runs(function() {
-      expect(client.isConnected()).toBe(false);
-    });
-  });
-
-  it('should fail to connect successfully with a 0 length clientid with cleansession false', function() {
+  it('should fail to connect successfully with a 0 length clientid', function() {
     var connectFail = false;
     var failCallback = function(err) {
       connectFail = true;

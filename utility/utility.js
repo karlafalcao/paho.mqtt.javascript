@@ -34,7 +34,7 @@ function onConnect(context) {
   // Once a connection has been made, make a subscription and send a message.
   var connectionString = context.invocationContext.host + ":" + context.invocationContext.port + context.invocationContext.path;
   logMessage("INFO", "Connection Success ", "[URI: ", connectionString, ", ID: ", context.invocationContext.clientId, "]");
-  var statusSpan = document.getElementById("connectionStatus");
+  var statusSpan = document.getElementsByClassName("connectionStatus");
   statusSpan.innerHTML = "Connected to: " + connectionString + " as " + context.invocationContext.clientId;
   connected = true;
   setFormEnabledState(true);
@@ -51,7 +51,7 @@ function onConnected(reconnect, uri) {
 
 function onFail(context) {
   logMessage("ERROR", "Failed to connect. [Error Message: ", context.errorMessage, "]");
-  var statusSpan = document.getElementById("connectionStatus");
+  var statusSpan = document.getElementsByClassName("connectionStatus");
   statusSpan.innerHTML = "Failed to connect: " + context.errorMessage;
   connected = false;
   setFormEnabledState(false);
@@ -174,14 +174,14 @@ function connect() {
 
   // connect the client
   client.connect(options);
-  var statusSpan = document.getElementById("connectionStatus");
+  var statusSpan = document.getElementsByClassName("connectionStatus");
   statusSpan.innerHTML = "Connecting...";
 }
 
 function disconnect() {
   logMessage("INFO", "Disconnecting from Server.");
   client.disconnect();
-  var statusSpan = document.getElementById("connectionStatus");
+  var statusSpan = document.getElementsByClassName("connectionStatus");
   statusSpan.innerHTML = "Connection - Disconnected.";
   connected = false;
   setFormEnabledState(false);

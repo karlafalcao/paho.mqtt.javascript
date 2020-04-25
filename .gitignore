@@ -4,4 +4,17 @@ target
 package-lock.json
 .env
 paho.mqtt.testing/
-persistence/
+
+# localstorage
+localstorage/
+
+# mosquitto docker volumes
+mosquitto/data/**
+mosquitto/log/**
+mosquitto/config/certs/**
+
+# cert files
+mosquitto/config/certs/*.srl
+mosquitto/config/certs/*.crt
+mosquitto/config/certs/*.csr
+mosquitto/config/certs/*.key
