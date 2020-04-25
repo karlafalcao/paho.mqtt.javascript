@@ -7,12 +7,16 @@
 		"type": "git",
 		"url": "https://github.com/eclipse/paho.mqtt.javascript.git"
 	},
+	"scripts": {
+		"local:start-server": "cd mosquitto && docker-compose up --build",
+		"local:start-web": "http-server -p 8081 && open http://localhost:8081/utility"
+	},
 	"license": "EPL-1.0",
 	"devDependencies": {
 		"dotenv": "^4.0.0",
 		"eslint": "^4.19.1",
 		"jasmine-node": "^3.0.0",
-		"jsdoc": "^3.6.2",
+		"jsdoc": "^3.6.4",
 		"node-localstorage": "1.3.x",
 		"websocket": "1.x.x"
 	}

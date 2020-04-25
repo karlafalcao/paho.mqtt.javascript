@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  mosquitto_mqtt-server:
+    image: eclipse-mosquitto
+    container_name: mosquitto_mqtt-server
+    ports:
+      - 1883:1883
+      - 8080:8080
+      - 443:443
+    volumes:
+      - ./config:/mosquitto/config
+      - ./data:/mosquitto/data
+      - ./log:/mosquitto/log
