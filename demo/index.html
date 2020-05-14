@@ -13,8 +13,8 @@
     <script src="../src/paho-mqtt.js" type="text/javascript"></script>
     <script src="mqtt-client.js" type="text/javascript"></script>
     <script>
-        var clientId = "testClient1";
-        var client = new MqttClient({
+        const clientId = "testClient1";
+        const client = new MqttClient({
             clientId,
             testServer: 'localhost',
             testPort: 8080});
