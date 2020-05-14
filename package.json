@@ -8,7 +8,7 @@
 		"url": "https://github.com/eclipse/paho.mqtt.javascript.git"
 	},
 	"scripts": {
-		"local:start-server": "cd mosquitto && docker-compose up --build",
+		"local:start-server": "cd mosquitto & docker-compose up --build",
 		"local:start-web": "http-server -p 8081 && open http://localhost:8081/utility"
 	},
 	"license": "EPL-1.0",

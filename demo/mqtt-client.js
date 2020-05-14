@@ -4,13 +4,13 @@
 
 
 window.MqttClient = function(
-    clientId,
      {
-         testServer = 'mqtt.eclipse.org',
-         testPort = 80,
-         testPath = '/mqtt',
-         testMqttVersion = 3,
-         testUseSSL = false
+        clientId,
+        testServer = 'mqtt.eclipse.org',
+        testPort = 80,
+        testPath = '/mqtt',
+        testMqttVersion = 3,
+        testUseSSL = false
      }) {
     let client = new Paho.Client(testServer, testPort, testPath, clientId);
     //states
