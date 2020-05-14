@@ -1,7 +1,6 @@
 //*************************************************************************
-// Client wrapper - define a client wrapper to ease testing
+// Client wrapper - define a client wrapper to ease manipulation
 //*************************************************************************
-
 
 window.MqttClient = function(
      {
@@ -10,7 +9,8 @@ window.MqttClient = function(
         testPort = 80,
         testPath = '/mqtt',
         testMqttVersion = 3,
-        testUseSSL = false
+        testUseSSL = false,
+        onConnectCallback = function() {}
      }) {
     let client = new Paho.Client(testServer, testPort, testPath, clientId);
     //states
@@ -20,34 +20,12 @@ window.MqttClient = function(
     let messageDelivered = false;
     let receivedMessage = null;
 
-    this.states = {
-        connected: connected
-    };
-
-    //reset all states
-    this.resetStates = function() {
-        connected = false;
-        subscribed = false;
-        messageReceived = false;
-        messageDelivered = false;
-        receivedMessage = null;
-    };
-
     //callbacks
+    // called when the client connects
     const onConnect = function() {
         console.log("%s connected", clientId);
         connected = true;
-        // called when the client connects
-        !function () {
-            // Once a connection has been made, make a subscription and send a message.
-            console.log("onConnect");
-            client.subscribe("World");
-            message = new Paho.Message("Test");
-            message.destinationName = "World";
-            client.send(message);
-        }()
-
-        console.assert(connected === true ,'connected');
+        onConnectCallback()
     };
 
     // called when the client loses its connection
@@ -57,6 +35,19 @@ window.MqttClient = function(
         }
         console.log("%s disconnected: %s", clientId, response);
         connected = false;
+    };
+
+    // called when a message arrives
+    const onMessageArrived = function(msg) {
+        console.log("%s received msg[onMessageArrived]: %s", clientId, msg.payloadString);
+        messageReceived = true;
+        receivedMessage = msg;
+    };
+
+    // called when a message is delivered
+    const onMessageDelivered = function(msg) {
+        console.log("%s delivered message: %s", clientId, msg.payloadString);
+        messageDelivered = true;
     };
 
     const onSubscribe = function() {
@@ -69,25 +60,13 @@ window.MqttClient = function(
         subscribed = false;
     };
 
-    // called when a message arrives
-    const onMessageArrived = function(msg) {
-        console.log("%s received msg[onMessageArrived]: %s", clientId, msg.payloadString);
-        messageReceived = true;
-        receivedMessage = msg;
-    };
-
-    const onMessageDelivered = function(msg) {
-        console.log("%s delivered message: %s", clientId, msg.payloadString);
-        messageDelivered = true;
-    }
-
-    //set callbacks
+    // set other callbacks
     client.onMessageArrived = onMessageArrived;
     client.onConnectionLost = onDisconnect;
     client.onMessageDelivered = onMessageDelivered;
 
-    //functions
-    //connect and verify
+    //Methods
+    //connect to websockets
     this.connect = function(connectOptions) {
         connectOptions = connectOptions || {};
         if (!connectOptions.hasOwnProperty("onSuccess")) {
@@ -113,71 +92,27 @@ window.MqttClient = function(
         });
     };
 
-    //subscribe and verify
-    this.subscribe = function(topic, qos) {
+    //subscribe
+    this.subscribe = function(topic, qos = 0) {
         client.subscribe(topic, {
-            qos: qos,
+            // qos: qos,
             onSuccess: onSubscribe
         });
     };
 
-    //unsubscribe and verify
+    //unsubscribe
     this.unsubscribe = function(topic) {
-        runs(function() {
-            client.unsubscribe(topic, {
-                onSuccess: onUnsubscribe
-            });
-        });
-
-        waitsFor(function() {
-            return !subscribed;
-        }, "the client should subscribe", 2000);
-
-        runs(function() {
-            expect(subscribed).not.toBe(true);
+        client.unsubscribe(topic, {
+            onSuccess: onUnsubscribe
         });
     };
 
-    //publish and verify
+    //publish
     this.publish = function(topic, qos, payload) {
-        runs(function() {
-            let message = new Paho.Message(payload);
-            message.destinationName = topic;
-            message.qos = qos;
-            client.send(message);
-        })
-
-        waitsFor(function() {
-            return messageDelivered;
-        }, "the client should delivered a message", 10000);
-
-        runs(function() {
-            //reset state
-            messageDelivered = false;
-        });
+        let message = new Paho.Message(payload);
+        message.destinationName = topic;
+        message.qos = qos;
+        client.send(message);
     };
 
-    //verify the receive message
-    this.receive = function(expectedTopic, publishedQoS, subscribedQoS, expectedPayload) {
-
-        waitsFor(function() {
-            return messageReceived;
-        }, "the client should send and receive a message", 10000);
-
-        runs(function() {
-            expect(messageReceived).toBe(true);
-            expect(receivedMessage).not.toBeNull();
-            expect(receivedMessage.qos).toBe(Math.min(publishedQoS, subscribedQoS));
-            expect(receivedMessage.destinationName).toBe(expectedTopic);
-            if (typeof expectedPayload === "string") {
-                expect(receivedMessage.payloadString).toEqual(expectedPayload);
-            } else {
-                expect(receivedMessage.payloadBytes).toEqual(expectedPayload);
-            }
-
-            //reset state after each publish
-            messageReceived = false;
-            receivedMessage = null;
-        })
-    };
 };

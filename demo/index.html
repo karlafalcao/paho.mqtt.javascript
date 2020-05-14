@@ -16,12 +16,19 @@
         const clientId = "testClient1";
         const client = new MqttClient({
             clientId,
-            testServer: 'localhost',
-            testPort: 8080});
+            testServer: 'mqtt.eclipse.org',
+            testPort: 80,
+            onConnectCallback: onConnect
+        });
 
-        //connect and verify
         client.connect();
 
+
+        // Once a connection has been made, make a subscription and send a message.
+        function onConnect() {
+            client.subscribe("World");
+            client.publish('World', 0, "Test");
+        }
     </script>
 </body>
 </html>
