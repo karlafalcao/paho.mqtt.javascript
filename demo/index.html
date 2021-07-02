@@ -16,8 +16,8 @@
         const clientId = "testClient1";
         const client = new MqttClient({
             clientId,
-            testServer: 'mqtt.eclipse.org',
-            testPort: 80,
+            testServer: 'test.mosquitto.org',
+            testPort: 8080,
             onConnectCallback: onConnect
         });
 
